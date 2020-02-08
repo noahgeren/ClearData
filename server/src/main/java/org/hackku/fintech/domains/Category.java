@@ -1,6 +1,7 @@
 package org.hackku.fintech.domains;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -29,6 +30,6 @@ public class Category implements Serializable{
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
-	private List<Business> businesses;
+	private List<Business> businesses = new ArrayList<>();
 
 }

@@ -2,6 +2,7 @@ package org.hackku.fintech.domains;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -39,7 +40,7 @@ public class City implements Serializable{
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
-	private List<Business> businesses;
+	private List<Business> businesses = new ArrayList<>();
 	
 	@CreatedDate
 	private LocalDateTime createdDate;
