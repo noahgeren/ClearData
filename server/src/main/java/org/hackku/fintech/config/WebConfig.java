@@ -12,7 +12,7 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 public class WebConfig implements WebMvcConfigurer{
 
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("starter");
+		registry.addViewController("/{path:[^\\.]*}").setViewName("index");
 	}
 	
 	@Bean
