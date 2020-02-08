@@ -147,8 +147,22 @@ body{
     height:70px;
 }
 
+
+.vertical-center{
+    position:relative;
+    top:50%;
+    transform:translateY(-50%);
+}
 .rounded-full{
     border-radius:1000px;
+}
+.sideArrows{
+    width:20px;
+    height:20px;
+}
+.weatherIcon{
+    width:50px;
+    height:50px;
 }
 
 </style>
