@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" th:lang="${#locale.language}">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>TITLE HERE</title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.27/bootstrap-native-v4.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap.native@2.0.15/dist/polyfill.min.js"></script>
+    <!-- Custom CSS and Scripts -->
+    <link rel="stylesheet" href="/css/css.css" th:href="@{/css/css.css}">  
+</head>
+<body>
+    <div class="container-fluid">
+        <section layout:fragment="body">
+            Content Goes Here
+        </section>
+    </div>
+</body>
+</html>
