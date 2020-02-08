@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
+import NotFound from "@/pages/NotFound";
 
 
 Vue.use(VueRouter);
@@ -19,6 +20,10 @@ const routes = [
   {
     path: '/dashboard',
     component: Dashboard
+  },
+  {
+    path: '*',
+    component: NotFound
   }
 ];
 
