@@ -35,8 +35,8 @@
                                 </b-col>
                             </b-row>
                         </b-card-text></b-tab>
-                        <b-tab title="Analytics"><b-card-text>Tab contents 2</b-card-text></b-tab>
-                        <b-tab title="Weather"><b-card-text>Tab contents 3</b-card-text></b-tab>
+                        <b-tab title="Analytics"><b-card-text><plotly :data="data" :layout="layout" :displayModeBar="true"/></b-card-text></b-tab>
+                        <b-tab title="Weather" ><b-card-text>Test</b-card-text></b-tab>
                         <b-tab title="Settings"><b-card-text>Accuweather is great!</b-card-text></b-tab>
                     </b-tabs>
                 </b-card>
@@ -47,10 +47,44 @@
 
 <script>
 import feather from "feather-icons";
+import { Plotly } from 'vue-plotly';
+
+var trace1 = {
+  x: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+  y: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+  name: 'Name of Trace 1',
+  type: 'scatter'
+};
+var trace2 = {
+  x: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+  y: [1, 0, 3, 2, 5, 4, 7, 6, 8],
+  name: 'Name of Trace 2',
+  type: 'scatter'
+};
 
 export default {
+
+    components: {
+        Plotly
+    },
+        
+
     data(){
+
+        
         return {
+
+            data:[{
+                x: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                y: trace2,
+                type:"scatter"
+            }],
+            layout:{
+            title: "Weekly View",
+            xaxis: {title: "Day of Week"},
+            yaxis: {title: "Average Income"}
+            },
+            
             days:[
                 {
                     day: "Sunday",
@@ -118,7 +152,15 @@ export default {
             ]
         };
     },
+    methods: {
+        graph: function (e){
+                Plotly.newPlot('myDiv', data, layout);
+                console.log("test");
+            }
+
+    },
     mounted(){
+          
         feather.replace({
             'stroke-width':2
         });
