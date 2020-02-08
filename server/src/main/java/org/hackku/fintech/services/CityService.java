@@ -42,8 +42,13 @@ public class CityService {
 		return cityRepo.findByStateOrderByStateAsc(state);
 	}
 	
+	public boolean save(City city) {
+		if(city == null || city.getKey() == null) return false;
+		return cityRepo.save(city) != null;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public City search(String query) {
+	public City searchApi(String query) {
 		if(query == null) return null;
 		Map<String, String> params = new HashMap<>();
 		params.put("apikey", apiKey);
@@ -56,11 +61,11 @@ public class CityService {
 			List<Map<String, Object>> results = restTemplate.exchange(request, new ParameterizedTypeReference<List<Map<String, Object>>>(){}).getBody();
 			if(results == null || results.size() == 0) return null;
 			Map<String, Object> cityData = results.get(0);
+			Map<String, Object> stateData = (Map<String, Object>) cityData.get("AdministrativeArea");
 			City city = new City();
 			city.setName((String) cityData.get("EnglishName"));
 			city.setKey((String) cityData.get("Key"));
 			city.setPostalCode((String) cityData.get("PrimaryPostalCode"));
-			Map<String, Object> stateData = (Map<String, Object>) cityData.get("AdministrativeArea");
 			city.setState((String) stateData.get("ID"));
 			return city;
 		} catch (UnsupportedEncodingException e) {

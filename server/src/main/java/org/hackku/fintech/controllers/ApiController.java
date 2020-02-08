@@ -29,7 +29,7 @@ public class ApiController {
 	
 	@GetMapping("/cities/search")
 	public City searchCities(@RequestParam String q) {
-		return cityService.search(q);
+		return cityService.searchApi(q);
 	}
 	
 }

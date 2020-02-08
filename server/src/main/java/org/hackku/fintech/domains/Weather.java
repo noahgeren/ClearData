@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -22,12 +24,10 @@ public class Weather implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
-	private LocalDateTime observationTime;
-	
+		
 	private String weatherText;
 	
-	private String weatherIcon;
+	private Integer weatherIcon;
 	
 	private boolean hasPrecipitation;
 	
@@ -36,9 +36,7 @@ public class Weather implements Serializable{
 	private Double precipitationAmount;
 	
 	private String precipitationUnit;
-	
-	private Integer precipitationUnitType;
-	
+		
 	private Double maxTemperature;
 	
 	private Double minTemperature;
@@ -46,5 +44,8 @@ public class Weather implements Serializable{
 	@ManyToOne
 	@JsonIgnore
 	private City city;
+	
+	@CreatedDate
+	private LocalDateTime created;
 
 }
