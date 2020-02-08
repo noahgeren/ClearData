@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="mainBody">
         <!-- HERO -->
         <b-row id="hero" class="text-light">
             <b-col cols="12" md="6" class="text-md-right text-center p-5">
@@ -43,42 +43,35 @@
                 <h1 class="pb-4 text-center font-weight-bold">Pricing</h1>
                 <b-col cols="10" md="8" offset="1" offset-md="2">
                     <b-row>
-                        <b-col md="4" class="pb-4 py-md-0">
+                        <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
                             <b-card title="$50" sub-title="START-UP" class="text-dark">
                                 <hr/>
-                                <b-card-text>
+                                <b-card-text class="flex-column">
                                     Comes with the basic functionality and predictions. Great for small and starting out businesses!
                                 </b-card-text>
-                                <b-button block variant="primary" class="">Buy Now</b-button>
+                                <b-button block variant="primary">Buy Now</b-button>
                             </b-card>
                         </b-col>
-                        <b-col md="4" class="pb-4 py-md-0">
+                        <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
                             <b-card title="$100" sub-title="STANDARD" class="text-dark">
                                 <hr/>
-                                <b-card-text>
+                                <b-card-text class="flex-column">
                                     Comes with the all the basic functionality and weather data tracking too. Perfect for companies looking to grow.
                                 </b-card-text>
-                                <b-button block variant="primary" class="">Buy Now</b-button>
+                                <b-button block variant="primary">Buy Now</b-button>
                             </b-card>
                         </b-col>
-                        <b-col md="4" class="pb-4 py-md-0">
+                        <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
                             <b-card title="$125" sub-title="ULTIMATE" class="text-dark">
                                 <hr/>
-                                <b-card-text>
+                                <b-card-text class="flex-column">
                                     The best we offer! All forms of data management and also includes integration using common POS systems.
                                 </b-card-text>
-                                <b-button block variant="primary" class="">Buy Now</b-button>
+                                <b-button block variant="primary">Buy Now</b-button>
                             </b-card>
                         </b-col>
                     </b-row>
                 </b-col>
-            </b-col>
-        </b-row>
-
-        <!-- FOOTER -->
-        <b-row class="text-center bg-dark text-light py-4">
-            <b-col>
-                <h5>&copy;2020 FinTech - All Rights Reserved</h5>
             </b-col>
         </b-row>
     </div>
@@ -105,15 +98,20 @@ export default {
     }
 }
 
+#mainBody{
+    min-height:calc(100vh - 85px - 70px);
+}
+
 *{
     font-family:'Roboto';
 }
 body{
-    margin-top:85px;
+    padding-top:85px;
 }
 
 .navbar{
     height: 85px;
+    line-height: 42px;
 }
 .navbar-brand{
     font-size:32pt;
@@ -145,7 +143,12 @@ body{
     font-size:50pt;
 }
 
+#footer{
+    height:70px;
+}
+
 .rounded-full{
     border-radius:1000px;
 }
+
 </style>
