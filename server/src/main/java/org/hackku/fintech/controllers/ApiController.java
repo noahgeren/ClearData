@@ -63,7 +63,24 @@ public class ApiController {
 		return averages;
 	}
 	
-	// TODO: @GetMapping("/averages/year/{id}")
+	@GetMapping("/averages/year/{id}")
+	public BigDecimal[] yearlyAverages(@PathVariable Integer id) {
+		BigDecimal[] averages = new BigDecimal[12];
+		Arrays.fill(averages, new BigDecimal(0));
+		long[] counts = new long[12];
+		Business business = businessService.findById(id);
+		if(business == null) return averages;
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		for(DailyReport report: reports) {
+			int month = report.getCreated().getMonth().getValue() - 1;
+			averages[month] = averages[month].add(report.getIncome());
+			counts[month]++;
+		}
+		for(int i = 0; i < averages.length; i++) {
+			averages[i] = averages[i].divide(BigDecimal.valueOf(counts[i]), RoundingMode.HALF_EVEN);
+		}
+		return averages;
+	}
 	
 	@GetMapping("/reports/list/{id}")
 	public List<DailyReport> reports(@PathVariable Integer id){
