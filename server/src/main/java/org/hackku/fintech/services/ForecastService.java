@@ -32,6 +32,18 @@ public class ForecastService {
 	@Value("${ACCUWEATHER_KEY}")
 	private String apiKey;
 	
+	public Forecast findOrSearch(City city, LocalDate date) {
+		Forecast forecast = forecastRepo.findFirstByCityAndDate(city, date);
+		if(forecast != null) return forecast;
+		List<Forecast> forecasts = searchApiByCity(city);
+		if(forecasts == null) return null;
+		forecasts = (List<Forecast>) forecastRepo.saveAll(forecasts);
+		for(Forecast f : forecasts) {
+			if(f.getDate().equals(date)) return forecast;
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Forecast> searchApiByCity(City city){
 		List<Forecast> forecasts = new ArrayList<>();
