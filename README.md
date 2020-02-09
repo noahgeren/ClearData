@@ -16,12 +16,12 @@ In the future our webapp will be hosted on a [Digital Ocean](http://digitalocean
 
 ## Stack
 
-- **Front End** - Vue (vuex, vue-router, bootstrap-vue, etc.), Axios, Feather icons, and TBD
+- **Front End** - Vue (vuex, vue-router, bootstrap-vue, etc.), Axios, Feather icons, and Plotly
 - **Back End** - Spring Boot and MySQL (Embedded Apache Tomcat and H2 database for development)
 - **API** - AccuWeather
 
 ## Authors and Acknowledgment
-- **Jace Bayless** - Front End Development  
-- **Noah Geren** - Back End Development  
-- **Max Goad** - TBD
-- **Apurva Rai** - TBD
+- **Jace Bayless** - Front End  
+- **Noah Geren** - Back End  
+- **Max Goad** - Front End Widgets
+- **Apurva Rai** - Prediction Statistician
