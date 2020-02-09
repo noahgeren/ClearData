@@ -1,5 +1,8 @@
 package org.hackku.fintech.controllers;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hackku.fintech.domains.Business;
@@ -12,6 +15,7 @@ import org.hackku.fintech.services.DailyReportService;
 import org.hackku.fintech.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +41,25 @@ public class ApiController {
 	@GetMapping("/categories/list")
 	public List<Category> listCategories(){
 		return categoryService.findAll();
+	}
+	
+	@GetMapping("/averages/week/{id}")
+	public BigDecimal[] weeklyAverages(@PathVariable Integer id) {
+		BigDecimal[] averages = new BigDecimal[7];
+		Arrays.fill(averages, new BigDecimal(0));
+		long[] counts = new long[7];
+		Business business = businessService.findById(id);
+		if(business == null) return averages;
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		for(DailyReport report: reports) {
+			int day = report.getCreated().getDayOfWeek().getValue() % 7;
+			averages[day] = averages[day].add(report.getIncome());
+			counts[day]++;
+		}
+		for(int i = 0; i < averages.length; i++) {
+			averages[i] = averages[i].divide(BigDecimal.valueOf(counts[i]), RoundingMode.HALF_EVEN);
+		}
+		return averages;
 	}
 	
 	@GetMapping("/reports/list")
