@@ -45,6 +45,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-springsecurity5
 	compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
 	
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-math3
+	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+	
+	
 }
 
 bootWar {

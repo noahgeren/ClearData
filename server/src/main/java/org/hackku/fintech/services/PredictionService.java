@@ -1,17 +1,48 @@
 package org.hackku.fintech.services;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.hackku.fintech.domains.Business;
+import org.hackku.fintech.domains.DailyReport;
+import org.hackku.fintech.util.PolyTrendLine;
+import org.hackku.fintech.util.TrendLine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PredictionService {
+	
+	@Autowired
+	DailyReportService reportService;
+	
+	@Autowired
+	ForecastService forecastService;
 
-	public BigDecimal predictDay(LocalDate date) {
+	public BigDecimal predictDay(LocalDate date, Business business) {
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		List<Double> dayOfWeekIncomes = new ArrayList<>();
+		for(DailyReport report : reports) {
+			if(report.getCreated().getDayOfWeek().equals(date.getDayOfWeek())) {
+				dayOfWeekIncomes.add(report.getIncome().doubleValue());
+			}
+		}
+		double[] incomes = dayOfWeekIncomes.stream().mapToDouble(i -> i).toArray();
+		double[] x = new double[365*3];
+		for(int i =1; i <= x.length; i++) {x[i] = i;}
+		TrendLine t = new PolyTrendLine(5);
+		t.setValues(incomes, x);
+		double predictionValue = t.predict(x.length+1);
+		
+		predictionValue = predictionValue*(temperatureMultiplier(forecastService.findOrSearch(business.getCity(), date).getMaxTemperature(),60,40))*(weatherMultiplier(forecastService.findOrSearch(business.getCity(), date).getWeatherIcon(),forecastService.findOrSearch(business.getCity(), date).getPrecipitationType(),0));
+		BigDecimal endValue = new BigDecimal(predictionValue, MathContext.DECIMAL64);
+		
 		//BigDecimal x = BigDecimal.valueOf(5);
 		//x = x.multiply(BigDecimal.valueOf(2));
-		return null;
+		return endValue;
 	}
 	
 	public double temperatureMultiplier(double temperature, double mean, double sigma) {
@@ -91,6 +122,6 @@ public class PredictionService {
 			
 		precipiationAmountMultiplier = temperatureMultiplier(precipitationAmount, 0, 3);
 		
-		return (weatherTypeMultiplier*precipitationTypeMultiplier*precipiationAmountMultiplier);	
-	}
+		return (weatherTypeMultiplier*precipitationTypeMultiplier*precipiationAmountMultiplier);
+	} 
 }
