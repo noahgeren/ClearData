@@ -62,7 +62,9 @@ public class PredictionService {
 		t.setValues(incomes, x);
 		double predictionValue = t.predict(x.length+1);
 		Forecast forecast = forecastService.findOrSearch(business.getCity(), date);
-		predictionValue = predictionValue*(temperatureMultiplier(forecast.getMaxTemperature(),60,40))*(weatherMultiplier(forecast.getWeatherIcon(),forecast.getPrecipitationType(),forecast.getPrecipitationIntensity()));
+		if(forecast != null) {
+			predictionValue = predictionValue*(temperatureMultiplier(forecast.getMaxTemperature(),60,40))*(weatherMultiplier(forecast.getWeatherIcon(),forecast.getPrecipitationType(),forecast.getPrecipitationIntensity()));
+		}
 		BigDecimal endValue = new BigDecimal(predictionValue);
 		return endValue;
 	}

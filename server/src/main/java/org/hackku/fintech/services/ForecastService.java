@@ -33,6 +33,7 @@ public class ForecastService {
 	private String apiKey;
 	
 	public Forecast findOrSearch(City city, LocalDate date) {
+		if(date.isAfter(LocalDate.now().plusDays(3))) return null;
 		Forecast forecast = forecastRepo.findFirstByCityAndDate(city, date);
 		if(forecast != null) return forecast;
 		List<Forecast> forecasts = searchApiByCity(city);

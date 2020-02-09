@@ -59,15 +59,10 @@ public class ApiController {
 		Arrays.fill(week, BigDecimal.ZERO);
 		Business business = businessService.findById(id);
 		if(business == null) return week;
-		List<Prediction> predictions = predictionService.findAllByBusiness(business);
 		final LocalDate now = LocalDate.now();
-		final LocalDate startOfWeek = now.minusDays((now.getDayOfWeek().getValue() % 7) + 1);
-		final LocalDate endOfWeek = startOfWeek.plusDays(8);
-		for(Prediction prediction : predictions) {
-			if(prediction.getDate().isAfter(startOfWeek) && prediction.getDate().isBefore(endOfWeek)) {
-				week[prediction.getDate().getDayOfWeek().getValue() % 7] = prediction.getValue();
-			}
-			if(prediction.getDate().getDayOfWeek().getValue() == 7) break;
+		LocalDate day = now.minusDays((now.getDayOfWeek().getValue() % 7));
+		for(int i = 0; i < week.length; i++, day=day.plusDays(1)) {
+			week[i] = predictionService.predictDay(day, business);
 		}
 		return week;
 	}
