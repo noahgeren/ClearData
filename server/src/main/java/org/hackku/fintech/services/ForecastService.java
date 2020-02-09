@@ -39,7 +39,9 @@ public class ForecastService {
 		if(forecasts == null) return null;
 		forecasts = (List<Forecast>) forecastRepo.saveAll(forecasts);
 		for(Forecast f : forecasts) {
-			if(f.getDate().equals(date)) return forecast;
+			if(f.getDate().isEqual(date)) {
+				return f;
+			}
 		}
 		return null;
 	}

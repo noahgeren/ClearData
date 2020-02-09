@@ -31,6 +31,9 @@ public class Business implements Serializable{
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<DailyReport> reports = new ArrayList<>();
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Prediction> prediction = new ArrayList<>();
+	
 	@ManyToOne
 	@JoinColumn
 	private Category category;

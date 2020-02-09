@@ -2,17 +2,20 @@ package org.hackku.fintech.controllers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hackku.fintech.domains.Business;
 import org.hackku.fintech.domains.Category;
 import org.hackku.fintech.domains.DailyReport;
+import org.hackku.fintech.domains.Prediction;
 import org.hackku.fintech.domains.Weather;
 import org.hackku.fintech.services.BusinessService;
 import org.hackku.fintech.services.CategoryService;
 import org.hackku.fintech.services.CityService;
 import org.hackku.fintech.services.DailyReportService;
+import org.hackku.fintech.services.PredictionService;
 import org.hackku.fintech.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +41,32 @@ public class ApiController {
 	
 	@Autowired
 	WeatherService weatherService;
+	
+	@Autowired
+	PredictionService predictionService;
 
 	@GetMapping("/categories/list")
 	public List<Category> listCategories(){
 		return categoryService.findAll();
+	}
+	
+	@GetMapping("/predictions/week/{id}")
+	public BigDecimal[] predictions(@PathVariable Integer id){
+		BigDecimal[] week = new BigDecimal[7];
+		Arrays.fill(week, BigDecimal.ZERO);
+		Business business = businessService.findById(id);
+		if(business == null) return week;
+		List<Prediction> predictions = predictionService.findAllByBusiness(business);
+		final LocalDate now = LocalDate.now();
+		final LocalDate startOfWeek = now.minusDays((now.getDayOfWeek().getValue() % 7) + 1);
+		final LocalDate endOfWeek = startOfWeek.plusDays(8);
+		for(Prediction prediction : predictions) {
+			if(prediction.getDate().isAfter(startOfWeek) && prediction.getDate().isBefore(endOfWeek)) {
+				week[prediction.getDate().getDayOfWeek().getValue() % 7] = prediction.getValue();
+			}
+			if(prediction.getDate().getDayOfWeek().getValue() == 7) break;
+		}
+		return week;
 	}
 	
 	@GetMapping("/averages/day/{id}")
@@ -107,10 +132,44 @@ public class ApiController {
 		return averages;
 	}
 	
-	@GetMapping("/reports/list/{id}")
-	public List<DailyReport> reports(@PathVariable Integer id){
+	@GetMapping("/reports/week/{id}")
+	public BigDecimal[] weekReports(@PathVariable Integer id){
+		BigDecimal[] week = new BigDecimal[7];
+		Arrays.fill(week, BigDecimal.ZERO);
 		Business business = businessService.findById(id);
-		return reportService.findByBusiness(business);
+		if(business == null) return week;
+		final LocalDate now = LocalDate.now();
+		final LocalDate startOfWeek = now.minusDays((now.getDayOfWeek().getValue() % 7));
+		final LocalDate endOfWeek = startOfWeek.plusDays(8);
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		for(DailyReport report : reports) {
+			if(report.getCreated().isAfter(startOfWeek.atStartOfDay()) && report.getCreated().isBefore(endOfWeek.atTime(23, 59))) {
+				System.out.println(report.getCreated().toString());
+				week[report.getCreated().getDayOfWeek().getValue() % 7] = report.getIncome();
+			}
+		}
+		return week;
+	}
+	
+	@GetMapping("/reports/year/{id}")
+	public BigDecimal[] yearReports(@PathVariable Integer id) {
+		BigDecimal[] year = new BigDecimal[12];
+		long[] counts = new long[12];
+		Arrays.fill(year, BigDecimal.ZERO);
+		Business business = businessService.findById(id);
+		if(business == null) return year;
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		int currentYear = LocalDate.now().getYear();
+		for(DailyReport report : reports) {
+			if(report.getCreated().getYear() == currentYear) {
+				year[report.getCreated().getMonth().getValue() - 1] = year[report.getCreated().getMonth().getValue() - 1].add(report.getIncome());
+				counts[report.getCreated().getMonth().getValue() - 1]++;
+			}
+		}
+		for(int i = 0; i < year.length; i++) {
+			year[i] = year[i].divide(BigDecimal.valueOf((counts[i] == 0)? 1: counts[i]), RoundingMode.HALF_EVEN);
+		}
+		return year;
 	}
 	
 	@GetMapping("/weather/list/{id}")

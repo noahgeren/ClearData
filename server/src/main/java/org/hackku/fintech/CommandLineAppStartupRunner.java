@@ -15,6 +15,7 @@ import org.hackku.fintech.services.BusinessService;
 import org.hackku.fintech.services.CategoryService;
 import org.hackku.fintech.services.CityService;
 import org.hackku.fintech.services.DailyReportService;
+import org.hackku.fintech.services.PredictionService;
 import org.hackku.fintech.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -37,6 +38,9 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 	
 	@Autowired
 	DailyReportService reportService;
+	
+	@Autowired
+	PredictionService predictionService;
 	
 	private static final Random RAN = new Random(1337);
 	
@@ -64,20 +68,20 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 		lawWeather = weatherService.saveAll(lawWeather);
 		List<DailyReport> dinerReports = createFakeReports(diner, sgfWeather, 500, 30, 
 							new double[] {1.2, 0.5, 0.6, 0.8, 0.6, 0.9, 1.3},
-							new double[] {0.9, 0.7, 0.4, 0.4}, 1.001, 0);
+							new double[] {0.9, 0.7, 0.4, 0.4}, 0);
 		List<DailyReport> antiqueReports = createFakeReports(antiques, lawWeather, 300, 5,
 							new double[] {1.2, 0.8, 0.7, 0.7, 0.6, 1.1, 1.3},
-							new double[] {0.95, 0.9, 0.8, 0.8}, 1.001, 0);
+							new double[] {0.95, 0.9, 0.8, 0.8}, 0);
 		List<DailyReport> iceCreamReports = createFakeReports(iceCream, lawWeather, 400, 40,
 							new double[] {1.2, 0.8, 0.7, 0.7, 0.6, 1.1, 1.3},
-							new double[] {0.9, 0.7, 0.3, 0.3}, 1.001, 950);
+							new double[] {0.9, 0.7, 0.3, 0.3}, 950);
 		reportService.saveAll(dinerReports);
 		reportService.saveAll(antiqueReports);
 		reportService.saveAll(iceCreamReports);
 	}
 	
 	private List<DailyReport> createFakeReports(Business business, List<Weather> weather, double baseIncome, 
-			long sales, double[] weekdayMultipliers, double[] precipitationMultipliers, double growRate, int start){
+			long sales, double[] weekdayMultipliers, double[] precipitationMultipliers, int start){
 		List<DailyReport> reports = new ArrayList<>();
 		for(int j = start; j < weather.size(); j++) {
 			Weather day = weather.get(j);
@@ -92,9 +96,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 			}
 			income = income.multiply(weatherMultiplier);
 			reports.add(new DailyReport(income, sales, business, day, day.getCreated().plusHours(1)));
-			baseIncome *= growRate;
 			if(income.compareTo(BigDecimal.valueOf(baseIncome)) == 1) {
-				sales+= Math.round(RAN.nextDouble() - 0.25);
+				sales*= Math.round(RAN.nextDouble() / 2 + .75);
 			}
 		}
 		return reports;
@@ -104,7 +107,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 											double[] precipitationRange, double[] temperatureRange, double dailyRange){
 		final String weatherText = "Clear", precipitationUnit = "in";
 		List<Weather> weather = new ArrayList<>();
-		for(LocalDate date = startDate; date.isBefore(LocalDate.now()); date=date.plusDays(1)) {
+		for(LocalDate date = startDate; date.isBefore(LocalDate.now().plusDays(1)); date=date.plusDays(1)) {
 			double amount = 0;
 			int weatherIcon = 1;
 			String type = null;
