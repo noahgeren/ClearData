@@ -44,10 +44,35 @@ public class ApiController {
 		return categoryService.findAll();
 	}
 	
+	@GetMapping("/averages/day/{id}")
+	public BigDecimal[] dailyAverages(@PathVariable Integer id) {
+		BigDecimal[] averages = new BigDecimal[3];
+		Arrays.fill(averages, BigDecimal.ZERO);
+		long count = 0;
+		long sales = 0;
+		boolean firstWeek = true;
+		Business business = businessService.findById(id);
+		if(business == null) return averages;
+		List<DailyReport> reports = reportService.findByBusiness(business);
+		for(DailyReport report: reports) {
+			if(firstWeek) {
+				averages[2] = averages[2].add(report.getIncome());
+				if(report.getCreated().getDayOfWeek().getValue() == 7) firstWeek = false;
+			}
+			averages[0] = averages[0].add(report.getIncome());
+			sales += report.getSales();
+			count++;
+		}
+		BigDecimal total = averages[0];
+		averages[0] = averages[0].divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
+		averages[1] = total.divide(BigDecimal.valueOf(sales), RoundingMode.HALF_EVEN);
+		return averages;
+	}
+	
 	@GetMapping("/averages/week/{id}")
 	public BigDecimal[] weeklyAverages(@PathVariable Integer id) {
 		BigDecimal[] averages = new BigDecimal[7];
-		Arrays.fill(averages, new BigDecimal(0));
+		Arrays.fill(averages, BigDecimal.ZERO);
 		long[] counts = new long[7];
 		Business business = businessService.findById(id);
 		if(business == null) return averages;
@@ -66,7 +91,7 @@ public class ApiController {
 	@GetMapping("/averages/year/{id}")
 	public BigDecimal[] yearlyAverages(@PathVariable Integer id) {
 		BigDecimal[] averages = new BigDecimal[12];
-		Arrays.fill(averages, new BigDecimal(0));
+		Arrays.fill(averages, BigDecimal.ZERO);
 		long[] counts = new long[12];
 		Business business = businessService.findById(id);
 		if(business == null) return averages;
