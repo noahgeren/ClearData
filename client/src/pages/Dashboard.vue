@@ -164,20 +164,20 @@ export default {
             },
             
             yearly:[{ // historical
-                x: ["Janurary","February","March","April","May","June","July","August","September","Octoeber","November","December"],
+                x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
                 y: [15, 10, 33, 23, 52, 45, 76, 62, 81, 10, 52, 50],
                 type:"scatter",
                 name: "Historical Avgs"
             }],
             yearly2:{ // projected
-                x: ["Janurary","February","March","April","May","June","July","August","September","Octoeber","November","December"],
+                x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
                 y: [10, 0, 30, 20, 50, 40, 70, 60, 80, 100, 50, 0],
                 type:"scatter",
                 name: "Projected Avgs",
                 
             },
             yearly3:{ // this year so far
-                x: ["Janurary","February","March","April","May","June","July","August","September","Octoeber","November","December"],
+                x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
                 y: [30, 10, 20, 24, 53],
                 type:"scatter",
                 name: "This Year",
@@ -305,29 +305,27 @@ export default {
         },
     },
     mounted(){
-        axios
-        .get('/api/averages/week/1')
+        axios.get('/api/averages/week/1')
         .then(response => {
-            for(let rep = 0; rep < 7; rep++){
-                this.weekly[0].y[rep] = (response.data[rep]);
-                
-            }
-        }) 
-        .catch(error => {
+            this.weekly[0].y = response.data;
+        }).catch(error => {
             console.log(error)
-        })
-        .finally(() => {this.loading = false;});
+        });
 
         axios.get('/api/averages/day/1')
-            .then((response)=>{
-                this.dailyStats = response.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-            .then(function () {
-        
-            });
+        .then((response)=>{
+            this.dailyStats = response.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        axios.get('/api/averages/year/1')
+        .then(response => {
+            this.yearly[0].y = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
 
         axios.get('/api/categories/list')
             .then((response)=>{

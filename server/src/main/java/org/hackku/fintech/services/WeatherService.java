@@ -42,7 +42,7 @@ public class WeatherService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Weather searchApiCurrentWeatherByCity(City city) {
+	public Weather searchApiByCity(City city) {
 		if(city == null || city.getKey() == null) return null;
 		Map<String, String> params = new HashMap<>();
 		params.put("apikey", apiKey);
