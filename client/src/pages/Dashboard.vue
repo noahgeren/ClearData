@@ -76,7 +76,7 @@
 
                         <b-tab title="Add Data"><b-card-text>
                             <b-row>
-                                <b-col>
+                                <b-col cols="6" offset="3">
                                     <h1 class="text-center">Insert Daily Data</h1>
                                     <label>Total Sales ($)</label>
                                     <b-input type="text"></b-input>
@@ -91,7 +91,7 @@
 
                         <b-tab title="Settings"><b-card-text>
                             <b-row>
-                                <b-col>
+                                <b-col cols="6" offset="3">
                                    <b-form>
                                         <h1 class="text-center">Account</h1>
                                         <label>Email</label>
