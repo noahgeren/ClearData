@@ -169,14 +169,7 @@ export default {
                 type:"scatter",
                 name: "Historical Avgs"
             }],
-            yearly2:{ // projected
-                x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
-                y: [10, 0, 30, 20, 50, 40, 70, 60, 80, 100, 50, 0],
-                type:"scatter",
-                name: "Projected Avgs",
-                
-            },
-            yearly3:{ // this year so far
+            yearly2:{ // this year so far
                 x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
                 y: [30, 10, 20, 24, 53],
                 type:"scatter",
@@ -346,7 +339,6 @@ export default {
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
         this.yearly.push(this.yearly2);
-        this.yearly.push(this.yearly3);
 
         feather.replace({
             'stroke-width':2
