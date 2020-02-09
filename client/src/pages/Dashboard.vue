@@ -4,55 +4,40 @@
             <b-col cols="12" class="py-4">
                 <b-card no-body class="">
                     <b-tabs pills card vertical>
-                        <!-- TAB ONE -->
-                        <!-- <b-tab title="Weekly View" active ><b-card-text>Test</b-card-text></b-tab>-->
                         <b-tab title="Analytics" active>
+                            <b-row id="numbers" class="py-5 mb-4">
+                                <b-col cols="12">
+                                    <h1 class="pb-4 text-center font-weight-bold">Analytics</h1>
+                                    <b-col cols="10" md="8" offset="1" offset-md="2">
+                                        <b-row>
+                                            <b-col class="text-center">
+                                                <h4>Daily Average Income</h4>
+                                                <br/>
+                                                <h1>${{ dailyStats[0] }}</h1>
+                                            </b-col>
+                                            <b-col class="text-center">
+                                                <h4>Average Spent Per Customer</h4>
+                                                <br/>
+                                                <h1>${{ dailyStats[1] }}</h1>
+                                            </b-col>
+                                            <b-col class="text-center">
+                                                <h4>Current Weekly Total</h4>
+                                                <br/>
+                                                <h1>${{ dailyStats[2] }}</h1>
+                                            </b-col>
+                                        </b-row>
+                                    </b-col>
+                                </b-col>
+                            </b-row>
                             <b-row>
-                                <b-col cols="2" class="text-center">
-                                    <b-dropdown :text="toggleText" variant="primary" size="lg" class="vertical-center" center>
+                                <b-col cols="10" offset="1">
+                                    <b-dropdown :text="toggleText" variant="primary" size="lg" class="vertical-center" center style="z-index:100;">
                                        <b-dropdown-item-button @click="toggle('Weekly')">Weekly</b-dropdown-item-button>
                                        <b-dropdown-item-button @click="toggle('Yearly')">Yearly</b-dropdown-item-button>
                                     </b-dropdown>       
                                 </b-col>
-                                <b-col cols="8">
+                                <b-col cols="10" offset="1">
                                     <b-card-text id="graph"><plotly :data="graphData" :layout="graphLayout" :displayModeBar="true"/></b-card-text>
-                                </b-col>
-                            </b-row>
-                            <!-- Numbahs -->
-                            <b-row id="numbers" class="py-5 bg-secondary text-light">
-                                <b-col cols="12">
-                                    <h1 class="pb-4 text-center font-weight-bold">Numbers</h1>
-                                    <b-col cols="10" md="8" offset="1" offset-md="2">
-                                        <b-row>
-                                            <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
-                                                <b-card title="Historical" class="text-dark">
-                                                    <hr/>
-                                                    <b-card-text class="flex-column">
-                                                        Hisorical numbers go here qwerqwerqerqw {{weekly[0].average}}
-                                                    </b-card-text>
-                                                    
-                                                </b-card>
-                                            </b-col>
-                                            <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
-                                                <b-card title="Current"  class="text-dark">
-                                                    <hr/>
-                                                    <b-card-text class="flex-column">
-                                                        Current numbers go here qwerqw erqwefqfre {{weekly2.average}}
-                                                    </b-card-text>
-                                                    
-                                                </b-card>
-                                            </b-col>
-                                            <b-col lg="4" class="pb-4 py-lg-0 d-flex align-items-stretch">
-                                                <b-card title="Projected"  class="text-dark">
-                                                    <hr/>
-                                                    <b-card-text class="flex-column">
-                                                        Projected numbers go here werwerwerwerqwerqwer {{weekly3.average}}
-                                                    </b-card-text>
-                                                    
-                                                </b-card>
-                                            </b-col>
-                                        </b-row>
-                                    </b-col>
                                 </b-col>
                             </b-row>
                         </b-tab>
@@ -247,7 +232,8 @@ export default {
                     actual: "400.00"
                 }
             ],
-            toggleText:'Weekly'
+            toggleText:'Weekly',
+            dailyStats:['','','']
         };
     },
     methods: {
@@ -275,21 +261,29 @@ export default {
         },
     },
     mounted(){
-        
         axios
         .get('/api/averages/week/1')
         .then(response => {
-            
             for(let rep = 0; rep < 7; rep++){
                 this.weekly[0].y[rep] = (response.data[rep]);
+                
             }
-            
-            
         }) 
         .catch(error => {
             console.log(error)
         })
         .finally(() => {this.loading = false;});
+
+        axios.get('/api/averages/day/1')
+            .then((response)=>{
+                this.dailyStats = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(function () {
+        
+            });
 
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
