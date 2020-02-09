@@ -73,7 +73,50 @@
                                 </b-col>
                             </b-row>
                         </b-card-text></b-tab>
-                        <b-tab title="Settings"><b-card-text>Accuweather is great!</b-card-text></b-tab>
+
+                        <b-tab title="Add Data"><b-card-text>
+                            <b-row>
+                                <b-col>
+                                    <h1 class="text-center">Insert Daily Data</h1>
+                                    <label>Total Sales ($)</label>
+                                    <b-input type="text"></b-input>
+                                    <br/>
+                                    <label>Total Number of Sales</label>
+                                    <b-input type="text"></b-input>
+                                    <br/>
+                                    <b-button variant="primary" block>Add Daily Data</b-button>
+                                </b-col>
+                            </b-row>
+                        </b-card-text></b-tab>
+
+                        <b-tab title="Settings"><b-card-text>
+                            <b-row>
+                                <b-col>
+                                   <b-form>
+                                        <h1 class="text-center">Account</h1>
+                                        <label>Email</label>
+                                        <b-input type="text"></b-input>
+                                        <br/>
+                                        <label>Password</label>
+                                        <b-input type="password"></b-input>
+                                        <br/>
+                                        <label>Confirm Password</label>
+                                        <b-input type="password"></b-input>
+                                        <br/>
+                                        <hr/>
+                                        <h1 class="text-center">Business</h1>
+                                        <label>Business Name</label>
+                                        <b-input type="text"></b-input>
+                                        <br/>
+                                        <label>Category</label>
+                                        <b-form-select :options="categories"></b-form-select>
+                                        <br/>
+                                        <br/>
+                                        <b-button variant="primary" block>Apply Changes</b-button>
+                                   </b-form> 
+                                </b-col>
+                            </b-row>    
+                        </b-card-text></b-tab>
                     </b-tabs>
                 </b-card>
             </b-col>
@@ -233,7 +276,8 @@ export default {
                 }
             ],
             toggleText:'Weekly',
-            dailyStats:['','','']
+            dailyStats:['','',''],
+            categories:[]
         };
     },
     methods: {
@@ -282,6 +326,22 @@ export default {
         }).catch(error => {
             console.log(error);
         });
+
+        axios.get('/api/categories/list')
+            .then((response)=>{
+                this.categories = response.data.map(category => {
+                    return {
+                        value: category.id,
+                        text: category.name
+                    };
+                });
+            })
+            .catch(function (error){
+                console.log(error);
+            })
+            .then(function () {
+
+            });
 
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
