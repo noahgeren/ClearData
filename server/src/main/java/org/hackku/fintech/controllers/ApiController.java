@@ -64,8 +64,8 @@ public class ApiController {
 			count++;
 		}
 		BigDecimal total = averages[0];
-		averages[0] = averages[0].divide(BigDecimal.valueOf(count), RoundingMode.HALF_EVEN);
-		averages[1] = total.divide(BigDecimal.valueOf(sales), RoundingMode.HALF_EVEN);
+		averages[0] = averages[0].divide(BigDecimal.valueOf((count == 0)? 1: count), RoundingMode.HALF_EVEN);
+		averages[1] = total.divide(BigDecimal.valueOf((sales == 0)? 1: sales), RoundingMode.HALF_EVEN);
 		return averages;
 	}
 	
@@ -83,7 +83,7 @@ public class ApiController {
 			counts[day]++;
 		}
 		for(int i = 0; i < averages.length; i++) {
-			averages[i] = averages[i].divide(BigDecimal.valueOf(counts[i]), RoundingMode.HALF_EVEN);
+			averages[i] = averages[i].divide(BigDecimal.valueOf((counts[i] == 0)? 1: counts[i]), RoundingMode.HALF_EVEN);
 		}
 		return averages;
 	}
@@ -102,7 +102,7 @@ public class ApiController {
 			counts[month]++;
 		}
 		for(int i = 0; i < averages.length; i++) {
-			averages[i] = averages[i].divide(BigDecimal.valueOf(counts[i]), RoundingMode.HALF_EVEN);
+			averages[i] = averages[i].divide(BigDecimal.valueOf((counts[i] == 0)? 1: counts[i]), RoundingMode.HALF_EVEN);
 		}
 		return averages;
 	}
