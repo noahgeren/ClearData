@@ -164,7 +164,13 @@ export default {
                 type:"scatter",
                 name: "Historical Avgs"
             }],
-            yearly2:{ // this year so far
+            yearly2:{ // predicted
+                x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
+                y: [15, 10, 33, 23, 52, 45, 76, 62, 81, 10, 52, 50],
+                type:"scatter",
+                name: "Projected Avgs"
+            },
+            yearly3:{ // this year so far
                 x: ["Janurary","February","March","April","May","June","July","August","September","October","November","December"],
                 y: [30, 10, 20, 24, 53],
                 type:"scatter",
@@ -202,7 +208,6 @@ export default {
             dailyStats:['','',''],
             categories:[],
             reports: [],
-            predictions: [],
             currentPage: 1
         };
     },
@@ -292,33 +297,31 @@ export default {
             console.log(error);
         });
 
-        axios.get('/api/reports/year/' + + this.$route.params.id)
+        axios.get('/api/reports/year/' + this.$route.params.id)
         .then(response => {
-            this.yearly[1].y = response.data;
+            this.yearly[2].y = response.data;
         }).catch(error => {
             console.log(error);
         });
 
-        axios.get('/api/reports/week/' + + this.$route.params.id)
+        axios.get('/api/reports/week/' + this.$route.params.id)
         .then(response => {
             this.weekly[2].y = response.data;
         }).catch(error => {
             console.log(error);
         });
 
-        axios.get('/api/reports/list/' + + this.$route.params.id)
+        axios.get('/api/reports/list/' + this.$route.params.id)
         .then(response => {
             this.reports = response.data;
         }).catch(error => {
             console.log(error);
         });
 
-        axios.get('/api/predictions/list/' + + this.$route.params.id)
+        axios.get('/api/predictions/year/' + this.$route.params.id)
         .then(response => {
-            this.predictions = response.data;
-        }).catch(error => {
-            console.log(error);
-        });
+            this.yearly[1].y = response.data;
+        })
 
         axios.get('/api/categories/list')
             .then((response)=>{
@@ -336,8 +339,8 @@ export default {
 
             });
 
-        
         this.yearly.push(this.yearly2);
+        this.yearly.push(this.yearly3);
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
         feather.replace({
