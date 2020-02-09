@@ -8,6 +8,7 @@ import java.util.List;
 import org.hackku.fintech.domains.Business;
 import org.hackku.fintech.domains.Category;
 import org.hackku.fintech.domains.DailyReport;
+import org.hackku.fintech.domains.Weather;
 import org.hackku.fintech.services.BusinessService;
 import org.hackku.fintech.services.CategoryService;
 import org.hackku.fintech.services.CityService;
@@ -62,9 +63,17 @@ public class ApiController {
 		return averages;
 	}
 	
-	@GetMapping("/reports/list")
-	public List<DailyReport> reports(){
-		Business business = businessService.findById(1);
+	// TODO: @GetMapping("/averages/year/{id}")
+	
+	@GetMapping("/reports/list/{id}")
+	public List<DailyReport> reports(@PathVariable Integer id){
+		Business business = businessService.findById(id);
 		return reportService.findByBusiness(business);
+	}
+	
+	@GetMapping("/weather/list/{id}")
+	public List<Weather> weather(@PathVariable Integer id){
+		Business business = businessService.findById(id);
+		return weatherService.findByCity(business.getCity());
 	}
 }

@@ -41,6 +41,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 	private static final Random RAN = new Random(1337);
 	
 	private static final String[] WEATHER_TYPES = {"Rain", "Snow", "Ice", "Mixed"};
+	
+	private static final int[][] SUB_TYPES = {{12, 13, 14, 18, 15, 16, 17}, {19, 20, 21, 22, 23}, {24, 25}, {26, 29}, {1, 2, 3, 4, 5}};
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -101,10 +103,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 	private List<Weather> createFakeWeather(LocalDate startDate, City city, double precipitationChance, double[] precipitationTypeChances, 
 											double[] precipitationRange, double[] temperatureRange, double dailyRange){
 		final String weatherText = "Clear", precipitationUnit = "in";
-		final int weatherIcon = 33;
 		List<Weather> weather = new ArrayList<>();
 		for(LocalDate date = startDate; date.isBefore(LocalDate.now()); date=date.plusDays(1)) {
 			double amount = 0;
+			int weatherIcon = 1;
 			String type = null;
 			boolean hasPrecipitation = RAN.nextDouble() <= precipitationChance;
 			if(hasPrecipitation) {
@@ -113,9 +115,12 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 				for(int i = 0; i < precipitationTypeChances.length; i++) {
 					if(chance <= precipitationTypeChances[i]) {
 						type = WEATHER_TYPES[i];
+						weatherIcon = SUB_TYPES[i][(int)(RAN.nextDouble() * SUB_TYPES[i].length)];
 						break;
 					}
 				}
+			}else {
+				weatherIcon = SUB_TYPES[4][(int)(RAN.nextDouble() * SUB_TYPES[4].length)];
 			}
 			double min = (RAN.nextDouble() / 2) * (temperatureRange[1] - temperatureRange[0]) + temperatureRange[0], 
 					max = min + (dailyRange * (RAN.nextDouble() + 0.5));
