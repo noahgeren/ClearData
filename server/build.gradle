@@ -52,5 +52,5 @@ dependencies {
 }
 
 bootWar {
-	archiveName = 'ROOT.war'
+	archiveName = 'app.war'
  }
