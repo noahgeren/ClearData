@@ -47,5 +47,22 @@ public class Weather implements Serializable{
 	
 	@CreatedDate
 	private LocalDateTime created;
+	
+	public Weather() { }
+	
+	public Weather(String weatherText, int weatherIcon, boolean hasPrecipitation,
+					double precipitationAmount, String precipitationType, String precipitationUnit, 
+					double maxTemperature, double minTemperature, City city, LocalDateTime created) {
+		this.weatherText = weatherText;
+		this.weatherIcon = weatherIcon;
+		this.hasPrecipitation = hasPrecipitation;
+		this.precipitationType = precipitationType;
+		this.precipitationAmount = precipitationAmount;
+		this.precipitationUnit = precipitationUnit;
+		this.maxTemperature = maxTemperature;
+		this.minTemperature = minTemperature;
+		this.city = city;
+		this.created = created;
+	}
 
 }

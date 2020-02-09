@@ -2,6 +2,7 @@ package org.hackku.fintech.services;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,18 @@ public class WeatherService {
 	@Value("${ACCUWEATHER_KEY}")
 	private String apiKey;
 	
+	public List<Weather> saveAll(List<Weather> weather){
+		if(weather == null) return new ArrayList<>();
+		return (List<Weather>) weatherRepo.saveAll(weather);
+	}
+	
+	public List<Weather> findByCity(City city){
+		if(city == null) return new ArrayList<>();
+		return weatherRepo.findByCityOrderByCreatedDesc(city);
+	}
+	
 	@SuppressWarnings("unchecked")
-	public Weather searchApiByCity(City city) {
+	public Weather searchApiCurrentWeatherByCity(City city) {
 		if(city == null || city.getKey() == null) return null;
 		Map<String, String> params = new HashMap<>();
 		params.put("apikey", apiKey);

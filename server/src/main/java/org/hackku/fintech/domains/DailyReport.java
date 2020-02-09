@@ -41,5 +41,15 @@ public class DailyReport implements Serializable{
 	
 	@CreatedDate
 	private LocalDateTime created;
+	
+	public DailyReport() { }
+	
+	public DailyReport(BigDecimal income, long sales, Business business, Weather weather, LocalDateTime created) {
+		this.income = income;
+		this.sales = sales;
+		this.business = business;
+		this.weather = weather;
+		this.created = created;
+	}
 
 }

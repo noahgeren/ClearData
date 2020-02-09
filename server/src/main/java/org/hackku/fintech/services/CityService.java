@@ -42,9 +42,9 @@ public class CityService {
 		return cityRepo.findByStateOrderByStateAsc(state);
 	}
 	
-	public boolean save(City city) {
-		if(city == null || city.getKey() == null) return false;
-		return cityRepo.save(city) != null;
+	public City save(City city) {
+		if(city == null || city.getKey() == null) return null;
+		return cityRepo.save(city);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -74,6 +74,12 @@ public class CityService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public City searchApiAndSave(String q) {
+		City city = searchApi(q);
+		if(city == null) return null;
+		return cityRepo.save(city);
 	}
 
 }

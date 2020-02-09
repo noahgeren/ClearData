@@ -1,7 +1,6 @@
 package org.hackku.fintech.domains;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,10 +38,13 @@ public class City implements Serializable{
 	@JsonIgnore
 	private List<Business> businesses = new ArrayList<>();
 	
-	@CreatedDate
-	private LocalDateTime createdDate;
+	public City() { }
 	
-	@LastModifiedDate
-	private LocalDateTime updatedDate;
+	public City(String name, String key, String state, String postalCode) {
+		this.name = name;
+		this.key = key;
+		this.state = state;
+		this.postalCode = postalCode;
+	}
 
 }

@@ -22,14 +22,14 @@ public class CategoryService {
 		return (List<Category>) categoryRepo.findAll();
 	}
 	
-	public void addAll(String... names) {
+	public List<Category> addAll(String... names) {
 		List<Category> categories = new ArrayList<>();
 		for(String name : names) {
 			Category category = new Category();
 			category.setName(name);
 			categories.add(category);
 		}
-		categoryRepo.saveAll(categories);
+		return (List<Category>) categoryRepo.saveAll(categories);
 	}
 
 }
