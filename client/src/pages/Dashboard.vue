@@ -42,34 +42,26 @@
                             </b-row>
                         </b-tab>
                         
-                        <b-tab title="Weather" ><b-card-text>
+                        <b-tab title="Past Data" ><b-card-text>
                             <b-row class="pb-4">
-                                <b-col cols="5" >
-                                    <b-button variant="primary" class="float-right">
-                                        <i class="sideArrows" data-feather="arrow-left"></i>
-                                    </b-button>
-                                </b-col>
-                                <b-col cols="2" class="text-center">
-                                    <p class="vertical-center">{{ days[0].date }} - {{ days[6].date }}</p>
-                                </b-col>
-                                <b-col cols="5">
-                                    <b-button variant="primary" class="vertical-center">
-                                        <i class="sideArrows" data-feather="arrow-right"></i>
-                                    </b-button>
+                                <b-col cols="12">
+                                    <h1 class="text-center">Past Data</h1>
                                 </b-col>
                             </b-row>
                             <b-row>    
-                                <b-col v-for="day in days" :key="day.date" class="text-center">
+                                <b-col v-for="day in days" :key="day.id" class="text-center">
                                     <h5 class="font-weight-bold">{{ day.day }}</h5>
-                                    <h6>{{ day.date }}</h6>
+                                    <h5>{{ new Date(day.created).toLocaleDateString() }}</h5>
                                     <hr/>
-                                    <h5>Weather</h5>
-                                    <i color="#000" :data-feather="day.weather" class="weatherIcon"></i>
-                                    <h6>{{ day.tempLow }}&deg;/ {{ day.tempHigh }} &deg;</h6>
+                                    <img :src="`https://developer.accuweather.com/sites/default/files/${('0'+day.weather.weatherIcon).slice(-2)}-s.png`"/>
+                                    <h6>{{ Math.round(day.weather.minTemperature) }}&deg;/ {{ Math.round(day.weather.maxTemperature) }} &deg;</h6>
                                     <hr/>
-                                    <p>Predicted: <br/> ${{ day.predicted }} </p>
-                                    <p>Actual: <br/> ${{ day.actual }} </p>
-                                    
+                                    <p>Income: <br/> ${{ day.income }} </p>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col cols="12" class="pt-5">
+                                    <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="7" align="center"></b-pagination>
                                 </b-col>
                             </b-row>
                         </b-card-text></b-tab>
@@ -77,14 +69,16 @@
                         <b-tab title="Add Data"><b-card-text>
                             <b-row>
                                 <b-col cols="6" offset="3">
-                                    <h1 class="text-center">Insert Daily Data</h1>
-                                    <label>Total Sales ($)</label>
-                                    <b-input type="text"></b-input>
-                                    <br/>
-                                    <label>Total Number of Sales</label>
-                                    <b-input type="text"></b-input>
-                                    <br/>
-                                    <b-button variant="primary" block>Add Daily Data</b-button>
+                                    <b-form @submit.prevent="addData">
+                                        <h1 class="text-center">Insert Daily Data</h1>
+                                        <label>Total Sales ($)</label>
+                                        <b-input type="text" v-model="income"></b-input>
+                                        <br/>
+                                        <label>Total Number of Sales</label>
+                                        <b-input type="text" v-model="sales"></b-input>
+                                        <br/>
+                                        <b-button type="submit" variant="primary" block>Add Daily Data</b-button>
+                                    </b-form>
                                 </b-col>
                             </b-row>
                         </b-card-text></b-tab>
@@ -138,7 +132,8 @@ export default {
     },
     data(){
         return {
-            
+            income: '',
+            sales: '',
             weekly:[{ // historical
                 x: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
                 y: [12, 21, 12, 33, 12, 16, 24],
@@ -182,105 +177,68 @@ export default {
                 xaxis: {title: "Day of Week"},
                 yaxis: {title: "Average Income"},
                 showlegend: true,
-                 transition: {
+                transition: {
                     duration: 500,
                     easing: 'cubic-in-out'
-                    },
-                    frame: {
+                },
+                frame: {
                     duration: 500
-                    }
+                },
             },
             yearlyLayout:{
                 title: "Yearly View",
                 xaxis: {title: "Year of Month"},
                 yaxis: {title: "Average Income"},
                 showlegend: true,
-                 transition: {
+                transition: {
                     duration: 500,
                     easing: 'cubic-in-out'
-                    },
-                    frame: {
+                },
+                frame: {
                     duration: 500
-                    }
+                },
             },
-            days:[
-                {
-                    day: "Sunday",
-                    date: "2/9",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Monday",
-                    date: "2/10",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Tuesday",
-                    date: "2/11",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Wednesday",
-                    date: "2/12",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Thursday",
-                    date: "2/13",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Friday",
-                    date: "2/14",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                },
-                {
-                    day: "Saturday",
-                    date: "2/15",
-                    weather: "cloud-drizzle",
-                    tempLow: "26",
-                    tempHigh: "42",
-                    predicted: "420.69",
-                    actual: "400.00"
-                }
-            ],
             toggleText:'Weekly',
             dailyStats:['','',''],
-            categories:[]
+            categories:[],
+            reports: [],
+            predictions: [],
+            currentPage: 1
         };
     },
     methods: {
         toggle(toggle){
             this.toggleText = toggle;
 
-        }        
+        },
+        scale(zoom) {
+            setTimeout(() => {
+                zoom.click();
+            }, 1500);
+        },
+        addData(){
+            axios.post('/api/reports/add/' + this.$route.params.id, {
+                income: this.income,
+                sales: this.sales
+            }).then(reponse => {
+                if(reponse.data === true){
+                    alert('Data Added!');
+                    this.income = '';
+                    this.sales = '';
+                }else{
+                    throw new Error();
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }      
     },
     computed: {
         graphData(){
+            let zoom = document.querySelector('a[data-title="Autoscale"]');
+            if(zoom){
+                this.scale(zoom);
+            }
             if(this.toggleText === 'Weekly'){
                 return this.weekly;
             } else if(this.toggleText === 'Yearly'){
@@ -296,16 +254,23 @@ export default {
             }
             return [];
         },
+        totalRows() {
+            if(!this.reports) return 0;
+            return this.reports.length;
+        },
+        days() {
+            return this.reports.slice((this.currentPage - 1) * 7, (this.currentPage - 1) * 7 + 7);
+        }
     },
     mounted(){
-        axios.get('/api/averages/week/1')
+        axios.get('/api/averages/week/' + this.$route.params.id)
         .then(response => {
             this.weekly[0].y = response.data;
         }).catch(error => {
             console.log(error)
         });
 
-        axios.get('/api/averages/day/1')
+        axios.get('/api/averages/day/' + this.$route.params.id)
         .then((response)=>{
             this.dailyStats = response.data;
         })
@@ -313,9 +278,44 @@ export default {
             console.log(error);
         });
 
-        axios.get('/api/averages/year/1')
+        axios.get('/api/averages/year/' + this.$route.params.id)
         .then(response => {
             this.yearly[0].y = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
+
+        axios.get('/api/predictions/week/' + this.$route.params.id)
+        .then(response => {
+            this.weekly[1].y = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
+
+        axios.get('/api/reports/year/' + + this.$route.params.id)
+        .then(response => {
+            this.yearly[1].y = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
+
+        axios.get('/api/reports/week/' + + this.$route.params.id)
+        .then(response => {
+            this.weekly[2].y = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
+
+        axios.get('/api/reports/list/' + + this.$route.params.id)
+        .then(response => {
+            this.reports = response.data;
+        }).catch(error => {
+            console.log(error);
+        });
+
+        axios.get('/api/predictions/list/' + + this.$route.params.id)
+        .then(response => {
+            this.predictions = response.data;
         }).catch(error => {
             console.log(error);
         });
@@ -336,10 +336,10 @@ export default {
 
             });
 
+        
+        this.yearly.push(this.yearly2);
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
-        this.yearly.push(this.yearly2);
-
         feather.replace({
             'stroke-width':2
         });

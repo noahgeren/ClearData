@@ -3,6 +3,7 @@ package org.hackku.fintech.controllers;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,8 @@ import org.hackku.fintech.services.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,7 +54,7 @@ public class ApiController {
 	}
 	
 	@GetMapping("/predictions/week/{id}")
-	public BigDecimal[] predictions(@PathVariable Integer id){
+	public BigDecimal[] weekPredictions(@PathVariable Integer id){
 		BigDecimal[] week = new BigDecimal[7];
 		Arrays.fill(week, BigDecimal.ZERO);
 		Business business = businessService.findById(id);
@@ -144,7 +147,6 @@ public class ApiController {
 		List<DailyReport> reports = reportService.findByBusiness(business);
 		for(DailyReport report : reports) {
 			if(report.getCreated().isAfter(startOfWeek.atStartOfDay()) && report.getCreated().isBefore(endOfWeek.atTime(23, 59))) {
-				System.out.println(report.getCreated().toString());
 				week[report.getCreated().getDayOfWeek().getValue() % 7] = report.getIncome();
 			}
 		}
@@ -176,5 +178,27 @@ public class ApiController {
 	public List<Weather> weather(@PathVariable Integer id){
 		Business business = businessService.findById(id);
 		return weatherService.findByCity(business.getCity());
+	}
+	
+	@GetMapping("/reports/list/{id}")
+	public List<DailyReport> reports(@PathVariable Integer id){
+		Business business = businessService.findById(id);
+		return reportService.findByBusiness(business);
+	}
+	
+	@GetMapping("/predictions/list/{id}")
+	public List<Prediction> predictions(@PathVariable Integer id){
+		Business business = businessService.findById(id);
+		return predictionService.findAllByBusiness(business);
+	}
+	
+	@PostMapping("/reports/add/{id}")
+	public boolean addReport(@PathVariable Integer id, @RequestBody DailyReport report) {
+		Business business = businessService.findById(id);
+		if(business == null) return false;
+		report.setBusiness(business);
+		report.setWeather(weatherService.searchAndSave(business.getCity()));
+		report.setCreated(LocalDateTime.now());
+		return reportService.save(report) != null;
 	}
 }

@@ -60,10 +60,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 		Business iceCream = businessService.save(new Business("Ol' Fashion Ice Cream", categories.get(2), lawrence));
 		List<Weather> sgfWeather = createFakeWeather(LocalDate.of(2017, 2, 6), sgf, 
 														0.08, new double[]{0.8, 0.9, 0.95, 1}, new double[] {0.1, 3},
-														new double[] {40, 80}, 20);
+														new double[] {40, 80}, 20, true);
 		List<Weather> lawWeather = createFakeWeather(LocalDate.of(2017, 2, 6), lawrence,
 														0.15, new double[] {0.5, 0.8, 0.9, 1}, new double[] {0.1, 6},
-														new double[] {20, 50}, 10);
+														new double[] {20, 50}, 10, false);
 		sgfWeather = weatherService.saveAll(sgfWeather);
 		lawWeather = weatherService.saveAll(lawWeather);
 		List<DailyReport> dinerReports = createFakeReports(diner, sgfWeather, 500, 30, 
@@ -104,10 +104,10 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 	}
 	
 	private List<Weather> createFakeWeather(LocalDate startDate, City city, double precipitationChance, double[] precipitationTypeChances, 
-											double[] precipitationRange, double[] temperatureRange, double dailyRange){
+											double[] precipitationRange, double[] temperatureRange, double dailyRange, boolean today){
 		final String weatherText = "Clear", precipitationUnit = "in";
 		List<Weather> weather = new ArrayList<>();
-		for(LocalDate date = startDate; date.isBefore(LocalDate.now().plusDays(1)); date=date.plusDays(1)) {
+		for(LocalDate date = startDate; date.isBefore(LocalDate.now().plusDays(today ? 1 : 0)); date=date.plusDays(1)) {
 			double amount = 0;
 			int weatherIcon = 1;
 			String type = null;

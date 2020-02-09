@@ -41,6 +41,12 @@ public class WeatherService {
 		return weatherRepo.findByCityOrderByCreatedDesc(city);
 	}
 	
+	public Weather searchAndSave(City city) {
+		Weather weather = searchApiByCity(city);
+		if(weather == null) return null;
+		return weatherRepo.save(weather);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Weather searchApiByCity(City city) {
 		if(city == null || city.getKey() == null) return null;
