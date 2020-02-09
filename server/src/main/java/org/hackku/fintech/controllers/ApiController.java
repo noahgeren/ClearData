@@ -67,6 +67,24 @@ public class ApiController {
 		return week;
 	}
 	
+	@GetMapping("/predictions/year/{id}")
+	public BigDecimal[] yearPredictions(@PathVariable Integer id) {
+		BigDecimal[] year = new BigDecimal[12];
+		long[] counts = new long[12];
+		Arrays.fill(year, BigDecimal.ZERO);
+		Business business = businessService.findById(id);
+		if(business == null) return year;
+		final LocalDate now = LocalDate.now();
+		for(LocalDate date = LocalDate.of(now.getYear(), 1, 1); date.getYear()==now.getYear(); date= date.plusDays(1)) {
+			year[date.getMonth().getValue() - 1] = year[date.getMonth().getValue() - 1].add(predictionService.predictDay(date, business));
+			counts[date.getMonth().getValue() - 1]++;
+		}
+		for(int i = 0; i < year.length; i++) {
+			year[i] = year[i].divide(BigDecimal.valueOf((counts[i] == 0)? 1: counts[i]), RoundingMode.HALF_EVEN);
+		}
+		return year;
+	}
+	
 	@GetMapping("/averages/day/{id}")
 	public BigDecimal[] dailyAverages(@PathVariable Integer id) {
 		BigDecimal[] averages = new BigDecimal[3];
