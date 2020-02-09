@@ -150,7 +150,7 @@ export default {
             },
             yearly3:{ // this year so far
                 x: ["Janurary","February","March","April","May","June","July","August","September","Octoeber","November","December"],
-                y: [30, 10, 20, 24, 53],
+                y: [10, 0, 30, 20, 50, 40, 70, 60, 80, 100, 50, 0],
                 type:"scatter",
                 name: "This Year",
                 
@@ -276,20 +276,36 @@ export default {
     },
     mounted(){
         
+       const week1avg = '/api/averages/week/1';
+       const week2avg = '/api/averages/week/2';
+       const week3avg = '/api/averages/week/3';
+
+       const year1avg = '/api/averages/year/0';
+       const year2avg = '/api/averages/year/1';
+       const year3avg = '/api/averages/year/2';
+
+            
         axios
-        .get('/api/averages/week/1')
-        .then(response => {
+        .all([axios.get(week1avg), axios.get(week2avg), axios.get(week3avg), axios.get(year1avg), axios.get(year2avg), axios.get(year3avg)])
+        .then(axios.spread((...responses) => {
+
+            this.weekly[0].y = responses[0].data;
+            this.weekly2.y = responses[1].data;
+            this.weekly3.y = responses[2].data;
+
+            this.yearly[0].y = responses[3].data;
+            this.yearly2.y = responses[4].data;
+            this.yearly3.y = responses[5].data;
+
+
+
             
-            for(let rep = 0; rep < 7; rep++){
-                this.weekly[0].y[rep] = (response.data[rep]);
-            }
-            
-            
-        }) 
+        })) 
         .catch(error => {
             console.log(error)
         })
         .finally(() => {this.loading = false;});
+        
 
         this.weekly.push(this.weekly2);
         this.weekly.push(this.weekly3);
