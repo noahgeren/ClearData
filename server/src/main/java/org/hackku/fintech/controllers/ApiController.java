@@ -97,7 +97,7 @@ public class ApiController {
 		if(business == null) return averages;
 		List<DailyReport> reports = reportService.findByBusiness(business);
 		for(DailyReport report: reports) {
-			int month = report.getCreated().getMonth().getValue() - 1;
+			int month = report.getCreated().getMonth().getValue() % 12;
 			averages[month] = averages[month].add(report.getIncome());
 			counts[month]++;
 		}
